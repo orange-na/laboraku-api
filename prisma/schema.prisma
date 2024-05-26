@@ -8,9 +8,34 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String    @id
+  name              String
+  email             String    @unique
+  encryptedPassword String
+  emailconfirmedAt  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  usersLaboratories           UsersLaboratories[]
 }
+
+model Laboratory {
+  id          String    @id
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  usersLaboratories     UsersLaboratories[]
+}
+model UsersLaboratories {
+  id            String      @id
+  laboratory    Laboratory  @relation(fields: [laboratoryId], references: [id])
+  laboratoryId  String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  role          String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([laboratoryId, userId])  
+}
+
